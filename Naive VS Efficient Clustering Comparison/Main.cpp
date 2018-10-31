@@ -6,6 +6,11 @@
 #include <vector>
 #include <cctype>		//for yes/no question
 
+void srand_file(void);
+//int benchmark(int **arr, int *comm, bool excess, bool defect, int nodenum, double avgdeg, int maxdeg, double expdeg, double comsiz, double mixpar, int rep);
+int benchmark(bool excess, bool defect, int nodenum, double avgdeg, int maxdeg, double expdeg, double comsiz, double mixpar, int rep);
+
+
 using namespace std;
 
 //FUNCTION PROTOTYPES
@@ -73,14 +78,13 @@ int lik_efficient(
 
 int main()
 {
-	bool NEW = true;
 
-//Get file name
+	//Get file name
 	char filename[256];
 	cout << "Enter file name, including suffix (ex. myfile.txt): ";
 	cin.getline(filename, 256);
 
-//Make sure file exists. otherwise, get file name again.
+	//Make sure file exists. otherwise, get file name again.
 	int file_exists = 0;
 	ifstream ifile(filename);
 	file_exists = (bool)ifile;
@@ -91,7 +95,8 @@ int main()
 		ifstream ifile(filename);
 		file_exists = (bool)ifile;
 	}
-	
+
+
 	cout << "Reading in edge list..." << endl;
 	//Input network edge list and convert to adjacency list that includes weight information
 	time_t read_start = time(0);//Time until solution
@@ -127,10 +132,8 @@ int main()
 			nb_links = nb_links + 1;
 		}
 	}
-	//This counts the link between i and j, and between j and i. In the undirected network case, this is double counts edges, so:
+	//This counts the link between i and j, and between j and i. In the undirected network case using an adjacency list, this double counts edges, so:
 	nb_links = nb_links / 2;
-	//cout << "NB_LINKS=" << nb_links << endl;
-	//cin.get(); cin.get();
 
 	//Print network as edge list and adjacency list. Can be commented out when running the real program.
 	//print_el(links); //print network as adjacency list, including weights. Can also print out as edge list, but currently commented out
