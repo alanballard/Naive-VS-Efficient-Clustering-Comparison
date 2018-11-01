@@ -6,10 +6,6 @@
 #include <vector>
 #include <cctype>		//for yes/no question
 
-void srand_file(void);
-//int benchmark(int **arr, int *comm, bool excess, bool defect, int nodenum, double avgdeg, int maxdeg, double expdeg, double comsiz, double mixpar, int rep);
-int benchmark(bool excess, bool defect, int nodenum, double avgdeg, int maxdeg, double expdeg, double comsiz, double mixpar, int rep);
-
 
 using namespace std;
 
