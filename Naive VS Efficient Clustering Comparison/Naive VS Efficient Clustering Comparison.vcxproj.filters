@@ -44,8 +44,5 @@
     <ClCompile Include="read_el.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modularity_efficient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
