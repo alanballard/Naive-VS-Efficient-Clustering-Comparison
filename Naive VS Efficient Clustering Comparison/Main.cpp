@@ -71,6 +71,25 @@ int lik_efficient(
 	int Success_counter,
 	double IT
 );
+//Iterative/efficient modularity
+ int modularity_efficient(
+	 char *filename,
+	 vector< vector<pair<int, int>> > links,
+	 int nb_links,
+	 int N,
+	 int min_k,
+	 int max_k,
+	 int k_int,
+	 double InitTemp,
+	 double CR,
+	 double TL,
+	 int Max_Success,
+	 double LimitIT,
+	 double epsilon,
+	 int TL_counter,
+	 int Success_counter,
+	 double IT
+ );
 
 int main()
 {
@@ -161,7 +180,7 @@ int main()
 	//		random_device rd;
 	//		mt19937 e2(rd());
 	//		uniform_real_distribution<double> dist_uni(0.0, 1.0);
-
+/*
 	cout << "#############################################################" << endl;
 	modularity(
 		filename,
@@ -181,7 +200,27 @@ int main()
 		Success_counter,
 		IT
 	);
-
+*/
+	cout << "#############################################################" << endl;
+	modularity_efficient(
+		filename,
+		links,
+		nb_links,
+		N,
+		min_k,
+		max_k,
+		k_int,
+		InitTemp,
+		CR,
+		TL,
+		Max_Success,
+		LimitIT,
+		epsilon,
+		TL_counter,
+		Success_counter,
+		IT
+	);
+/*
 cout << "#############################################################" << endl;
 	lik_naive(
 		filename,
@@ -223,6 +262,7 @@ cout << "#############################################################" << endl;
 		);
 	
 	cout << "#############################################################" << endl;
+*/
 	cout << "Program ended. Hit enter to exit.";
 	cin.get(); cin.get();
 
