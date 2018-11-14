@@ -31,12 +31,12 @@
 // see README.txt for more details
 
 
-#include "graph.h"
+#include "graph_2b.h"
 
 using namespace std;
 
 
-Graph::Graph(char *filename, int type) {
+Graph_b::Graph_b(vector<vector<pair<int, int/*long double*/> > > source_links, int link_count, char *filename, int type) {
   ifstream finput;
   finput.open(filename,fstream::in);
   if (finput.is_open() != true) {
@@ -45,7 +45,8 @@ Graph::Graph(char *filename, int type) {
   }
 
   unsigned long long nb_links = 0ULL;
-
+  
+  /*
   while (!finput.eof()) {
     unsigned int src, dest;
     long double weight = 1.0L;
@@ -67,13 +68,40 @@ Graph::Graph(char *filename, int type) {
 
       nb_links += 1ULL;
     }
+
   }
+  */
+  for (unsigned int i = 0; i < source_links.size(); i++) {
+	  cout << "Vertex " << i << ":";
+	  for (unsigned int j = 0; j < source_links[i].size(); j++) {
+		  cout << " " << source_links[i][j].first << " <" << source_links[i][j].second << ">";
+	  }
+	  cout << endl;
+  }
+
+  //Need to DE-dup the adjacency list
+  vector<vector<pair<int, int> > > test_links = source_links;
+  for (unsigned int i = 0; i < test_links.size(); i++) {
+	  for (unsigned int j = 0; j < test_links[i].size(); j++) {
+//if source node number > destination node number - remove destination node from source node's entry in the adjacency list
+if(i > test_links[i][j].first)
+{
+	test_links.erase(test_links[i][j]);
+}
+		  //test_links.erase(test_links[i][j]);
+	  }
+  }
+  
+
+  links = source_links;
+  nb_links = link_count;
+  cout << links.size() << "..." << nb_links; cin.get(); cin.get();
 
   finput.close();
 }
 
 void
-Graph::renumber(int type, char *filename) {
+Graph_b::renumber_b(int type, char *filename) {
   vector<int> linked(links.size(),-1);
   vector<int> renum(links.size(),-1);
   int nb = 0;
@@ -105,10 +133,10 @@ Graph::renumber(int type, char *filename) {
 }
 
 void
-Graph::clean(int type) {
+Graph_b::clean_b(int type) {
   for (unsigned int i=0 ; i<links.size() ; i++) {
-    map<int, long double> m;
-    map<int, long double>::iterator it;
+    map<int, int/*long double*/> m;
+    map<int, int/*long double*/>::iterator it;
 
     for (unsigned int j=0 ; j<links[i].size() ; j++) {
       it = m.find(links[i][j].first);
@@ -118,7 +146,7 @@ Graph::clean(int type) {
       	it->second+=links[i][j].second;
     }
     
-    vector<pair<int, long double> > v;
+    vector<pair<int, int/*long double*/> > v;
     for (it = m.begin() ; it!=m.end() ; it++)
       v.push_back(*it);
     links[i].clear();
@@ -127,11 +155,11 @@ Graph::clean(int type) {
 }
 
 void
-Graph::display(int type) {
+Graph_b::display_b(int type) {
   for (unsigned int i=0 ; i<links.size() ; i++) {
     for (unsigned int j=0 ; j<links[i].size() ; j++) {
       int dest = links[i][j].first;
-      long double weight = links[i][j].second;
+	  int/*long double*/ weight = links[i][j].second;
       if (type==WEIGHTED)
 	cout << i << " " << dest << " " << weight << endl;
       else
@@ -142,7 +170,7 @@ Graph::display(int type) {
 }
 
 void
-Graph::display_binary(char *filename, char *filename_w, int type) {
+Graph_b::display_binary_b(char *filename, char *filename_w, int type) {
   ofstream foutput;
   foutput.open(filename, fstream::out | fstream::binary);
 
@@ -173,8 +201,8 @@ Graph::display_binary(char *filename, char *filename_w, int type) {
     foutput_w.open(filename_w,fstream::out | fstream::binary);
     for (int i=0 ; i<s ; i++) {
       for (unsigned int j=0 ; j<links[i].size() ; j++) {
-	long double weight = links[i][j].second;
-	foutput_w.write((char *)(&weight),sizeof(long double));
+	int/*long double*/ weight = links[i][j].second;
+	foutput_w.write((char *)(&weight),sizeof(int/*long double*/));
       }
     }
     foutput_w.close();

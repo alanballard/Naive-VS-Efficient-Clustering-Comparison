@@ -31,7 +31,7 @@
 // see README.txt for more details
 
 
-#include "graph.h"
+#include "graph_2b.h"
 
 using namespace std;
 
@@ -96,17 +96,26 @@ parse_args(int argc, char **argv) {
 }
 */
 
-int
-main(/*int argc, char **argv*/) {
+//int main(int argc, char **argv) {
+int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_links, int link_count, char *filename) {
   //parse_args(argc, argv);
 
-	char infile[256];
-	cout << "Enter file name, including suffix (ex. myfile.txt): ";
-	cin.getline(infile, 256);
+	//char infile[256];
+	//cout << "Enter file name, including suffix (ex. myfile.txt): ";
+	//cin.getline(infile, 256);
 
 	char outfile[256];
-	cout << "Enter OUTPUT file name, including suffix (ex. myfile.txt): ";
-	cin.getline(outfile, 256);
+	//cout << "Enter OUTPUT file name, including suffix (ex. myfile.txt): ";
+	//cin.getline(outfile, 256);
+
+	ostringstream atkstring2;
+	// If old file exists from a previous run, delete it.
+	remove("louvain_binary.txt");
+	atkstring2 << "louvain_binary" << ".txt";
+	
+	string s = atkstring2.str();	
+	//char cstr[s.size() + 1];
+	strcpy_s(outfile, s.c_str());	
 
 	//char *infile = NULL;
 	//char *infile = "network1000.txt";
@@ -115,14 +124,15 @@ main(/*int argc, char **argv*/) {
 	char *rel = NULL;
 	int type = UNWEIGHTED;
 	bool do_renumber = false;
-	//infile = "network1000.txt";
-  Graph g(infile, type);
 
-  g.clean(type);
+  Graph_b g_b(source_links, link_count, filename, type);
+
+  g_b.clean_b(type);
 
   if (do_renumber)
-    g.renumber(type, rel);
+	  g_b.renumber_b(type, rel);
 
-  g.display_binary(outfile, outfile_w, type);
+  g_b.display_binary_b(outfile, outfile_w, type);
 
+  return 0;
 }

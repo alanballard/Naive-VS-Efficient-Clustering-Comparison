@@ -31,10 +31,11 @@
 // see README.txt for more details
 
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef GRAPH_H_2b
+#define GRAPH_H_2b
 
 #include <iostream>
+#include <sstream> //ALAN: used to create outfile name in louvain_convert_2b
 #include <fstream>
 #include <vector>
 #include <map>
@@ -46,16 +47,16 @@
 using namespace std;
 
 
-class Graph {
+class Graph_b {
  public:
-  vector<vector<pair<int, long double> > > links;
+  vector<vector<pair<int, int/*long double*/> > > links;
   
-  Graph (char *filename, int type);
+  Graph_b (vector<vector<pair<int, int/*long double*/> > > source_links, int link_count, char *filename, int type);
   
-  void clean(int type);
-  void renumber(int type, char *filename);
-  void display(int type);
-  void display_binary(char *filename, char *filename_w, int type);
+  void clean_b(int type);
+  void renumber_b(int type, char *filename);
+  void display_b(int type);
+  void display_binary_b(char *filename, char *filename_w, int type);
 };
 
-#endif // GRAPH_H
+#endif // GRAPH_H_2b

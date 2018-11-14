@@ -40,7 +40,7 @@
 #include <process.h> //ALAN: to use _getpid
 
 #include "modularity.h"
-#include "zahn.h"
+/*#include "zahn.h"
 #include "owzad.h"
 #include "goldberg.h"
 #include "condora.h"
@@ -48,7 +48,7 @@
 #include "devuni.h"
 #include "dp.h"
 #include "shimalik.h"
-#include "balmod.h"
+#include "balmod.h"*/
 
 
 using namespace std;
@@ -172,6 +172,7 @@ parse_args(int argc, char **argv) {
     usage(argv[0], "No input file has been provided\n");
 }
 */
+
 void
 display_time(const char *str) {
   time_t rawtime;
@@ -185,9 +186,10 @@ init_quality(Graph *g, unsigned short nbc) {
   if (nbc > 0)
     delete q;
 
-  switch (id_qual) {
+  q = new Modularity(*g);
+  /*switch (id_qual) {
   case 0:
-    q = new Modularity(*g);
+   q = new Modularity(*g);
     break;
   case 1:
     if (nbc == 0)
@@ -240,19 +242,20 @@ init_quality(Graph *g, unsigned short nbc) {
     q = new Modularity(*g);
     break;
   }
+  */
 }
 
 
-int
-main(/*int argc, char **argv*/) {
+//int main(/*int argc, char **argv*/) {
+int louvain_clustering(char *filename) {
 
   srand(time(NULL)+_getpid()); //ALAN getpid replaced with_getpid
 								//ALAN: https://msdn.microsoft.com/en-us/library/ms235372.aspx
   //parse_args(argc, argv);
   
-  char filename[256];
-  cout << "Enter file name, including suffix (ex. myfile.txt): ";
-  cin.getline(filename, 256);
+  //char filename[256];
+  //cout << "Enter file name, including suffix (ex. myfile.txt): ";
+  //cin.getline(filename, 256);
 
  // time_t time_begin, time_end;
   //time(&time_begin);
@@ -336,4 +339,6 @@ main(/*int argc, char **argv*/) {
 
   cout << "PROGRAM IS DONE. HIT ENTER TO QUIT" << endl;
   cin.get(); cin.get();
+
+  return 0;
 }

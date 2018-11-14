@@ -13,11 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Filter Include="Source Files\Convert 2 Binary">
+      <UniqueIdentifier>{ff440bb8-436e-403f-b447-bfa5a7c198a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Convert 2 Binary">
+      <UniqueIdentifier>{8909fbd1-f94f-406b-96e5-a2d03671d700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Louvain Undirected Clustering">
+      <UniqueIdentifier>{e1622f3d-03a6-4d3a-8acd-1d66516170c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Louvain Undirected Clustering">
+      <UniqueIdentifier>{4debb7f9-8358-40fe-8b14-f478ca32f46b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="initial_pop.cpp">
@@ -44,5 +51,43 @@
     <ClCompile Include="read_el.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\graph_binary.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\louvain.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\main_louvain.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\modularity.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\quality.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Convert to Binary\graph_2b.cpp">
+      <Filter>Source Files\Convert 2 Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Convert to Binary\louvain_convert_2b.cpp">
+      <Filter>Source Files\Convert 2 Binary</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Louvain Undirected Clustering\graph_binary.h">
+      <Filter>Header Files\Louvain Undirected Clustering</Filter>
+    </ClInclude>
+    <ClInclude Include="Louvain Undirected Clustering\louvain.h">
+      <Filter>Header Files\Louvain Undirected Clustering</Filter>
+    </ClInclude>
+    <ClInclude Include="Louvain Undirected Clustering\modularity.h">
+      <Filter>Header Files\Louvain Undirected Clustering</Filter>
+    </ClInclude>
+    <ClInclude Include="Louvain Undirected Clustering\quality.h">
+      <Filter>Header Files\Louvain Undirected Clustering</Filter>
+    </ClInclude>
+    <ClInclude Include="Louvain Convert to Binary\graph_2b.h">
+      <Filter>Header Files\Convert 2 Binary</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
