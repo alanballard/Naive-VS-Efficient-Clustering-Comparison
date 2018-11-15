@@ -39,7 +39,7 @@
 #include <io.h> //ALAN
 #include <process.h> //ALAN: to use _getpid
 
-#include "modularity.h"
+#include "louvain_modularity.h"
 /*#include "zahn.h"
 #include "owzad.h"
 #include "goldberg.h"
@@ -333,9 +333,10 @@ vector<int> louvain_clustering(char *filename, vector< vector<pair<int, int>> > 
   
   cout << setprecision(10);
   long double time = 0;
+  time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
   if (verbose) {
     display_time("End");
-	/*double*/ time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
+	//double time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
     //cerr << "Total duration: " << (time_end-time_begin) << " sec" << endl;
 	cerr << "Total duration: " << time << " sec" << endl;
 
@@ -345,7 +346,7 @@ vector<int> louvain_clustering(char *filename, vector< vector<pair<int, int>> > 
   //g.display();//ALAN
 
   delete q;
- 
+ time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
   c.final_output(filename, links, current_membership, quality, nb_links, time);
 
   //cout << "PROGRAM IS DONE. HIT ENTER TO QUIT" << endl;

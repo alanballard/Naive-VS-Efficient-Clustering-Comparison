@@ -175,7 +175,7 @@
     <ClInclude Include="Louvain Convert to Binary\graph_2b.h" />
     <ClInclude Include="Louvain Undirected Clustering\graph_binary.h" />
     <ClInclude Include="Louvain Undirected Clustering\louvain.h" />
-    <ClInclude Include="Louvain Undirected Clustering\modularity.h" />
+    <ClInclude Include="Louvain Undirected Clustering\louvain_modularity.h" />
     <ClInclude Include="Louvain Undirected Clustering\quality.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

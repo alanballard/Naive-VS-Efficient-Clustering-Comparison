@@ -35,70 +35,10 @@
 
 using namespace std;
 
-/*
-char *infile = NULL;
-char *outfile = NULL;
-char *outfile_w = NULL;
-char *rel = NULL;
-int type = UNWEIGHTED;
-bool do_renumber = false;
-*/
-/*
-void
-usage(char *prog_name, const char *more) {
-  cerr << more;
-  cerr << "usage: " << prog_name << " -i input_file -o outfile [-r outfile_relation] [-w outfile_weight] [-h]" << endl << endl;
-  cerr << "read the graph and convert it to binary format" << endl;
-  cerr << "-r file\tnodes are renumbered from 0 to nb_nodes-1 (the labelings connection is stored in a separate file)" << endl;
-  cerr << "-w file\tread the graph as a weighted one and writes the weights in a separate file" << endl;
-  cerr << "-h\tshow this usage message" << endl;
-  exit(0);
-}
 
-void
-parse_args(int argc, char **argv) {
-  for (int i = 1; i < argc; i++) {
-    if(argv[i][0] == '-') {
-      switch(argv[i][1]) {
-      case 'i':
-	if (i==argc-1)
-	  usage(argv[0], "Infile missing\n");
-	infile = argv[i+1];
-	i++;
-	break;
-      case 'o':
-	if (i==argc-1)
-	  usage(argv[0], "Outfile missing\n");
-        outfile = argv[i+1];
-	i++;
-	break;
-      case 'w':
-	type = WEIGHTED;
-        outfile_w = argv[i+1];
-	i++;
-	break;
-      case 'r':
-	if (i==argc-1)
-	  usage(argv[0], "Labelings connection outfile missing\n");
-        rel = argv[i+1];
-	i++;
-	do_renumber=true;
-	break;
-      default:
-	usage(argv[0], "Unknown option\n");
-      }
-    } else {
-      usage(argv[0], "More than one filename\n");
-    }
-  }
-  if (infile==NULL || outfile==NULL)
-    usage(argv[0], "In or outfile missing\n");
-}
-*/
 
 //int main(int argc, char **argv) {
 int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_links, int link_count, char *filename) {
-  //parse_args(argc, argv);
 
 	//char infile[256];
 	//cout << "Enter file name, including suffix (ex. myfile.txt): ";
@@ -108,6 +48,7 @@ int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_li
 	//cout << "Enter OUTPUT file name, including suffix (ex. myfile.txt): ";
 	//cin.getline(outfile, 256);
 
+	//ALAN: Network data file is first converted to binary format, then saved to a flat file from where it will be read by the louvain code
 	ostringstream atkstring2;
 	// If old file exists from a previous run, delete it.
 	remove("louvain_binary.txt");
@@ -117,9 +58,6 @@ int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_li
 	//char cstr[s.size() + 1];
 	strcpy_s(outfile, s.c_str());	
 
-	//char *infile = NULL;
-	//char *infile = "network1000.txt";
-	//char *outfile = "out yo yo.txt";
 	char *outfile_w = NULL;
 	char *rel = NULL;
 	int type = UNWEIGHTED;

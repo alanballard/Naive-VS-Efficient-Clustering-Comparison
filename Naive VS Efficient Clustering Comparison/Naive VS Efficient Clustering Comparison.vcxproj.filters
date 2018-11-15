@@ -80,14 +80,14 @@
     <ClInclude Include="Louvain Undirected Clustering\louvain.h">
       <Filter>Header Files\Louvain Undirected Clustering</Filter>
     </ClInclude>
-    <ClInclude Include="Louvain Undirected Clustering\modularity.h">
-      <Filter>Header Files\Louvain Undirected Clustering</Filter>
-    </ClInclude>
     <ClInclude Include="Louvain Undirected Clustering\quality.h">
       <Filter>Header Files\Louvain Undirected Clustering</Filter>
     </ClInclude>
     <ClInclude Include="Louvain Convert to Binary\graph_2b.h">
       <Filter>Header Files\Convert 2 Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="Louvain Undirected Clustering\louvain_modularity.h">
+      <Filter>Header Files\Louvain Undirected Clustering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

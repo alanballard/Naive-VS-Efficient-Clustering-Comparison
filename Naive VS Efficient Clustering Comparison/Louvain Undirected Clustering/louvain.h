@@ -84,7 +84,7 @@ class Louvain {
   // displays the current partition (with communities renumbered from 0 to k-1)
   void display_partition();
 
-  //ALAN
+  //ALAN: Added code to store louvain solution membership vector and output associated statistics to file
   vector<int>  store_solution(vector<int> current_membership);
   void final_output(char *filename, vector< vector<pair<int, int>> > links, vector<int> current_membership, long double quality, int nb_links, long double time);
 
