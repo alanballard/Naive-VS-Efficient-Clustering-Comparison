@@ -73,7 +73,7 @@ int lik_efficient(
 );
 
 int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_links, int nb_links, char *filename);
-int louvain_clustering(char *filename);
+vector<int> louvain_clustering(char *filename, vector< vector<pair<int, int>> > links, int nb_links);
 
 int main()
 {
@@ -164,7 +164,7 @@ int main()
 	//		random_device rd;
 	//		mt19937 e2(rd());
 	//		uniform_real_distribution<double> dist_uni(0.0, 1.0);
-/*
+
 	cout << "#############################################################" << endl;
 	modularity(
 		filename,
@@ -227,11 +227,14 @@ cout << "#############################################################" << endl;
 		);
 	
 	cout << "#############################################################" << endl;
-*/
 
+
+
+cout << "LOUVAIN METHOD" << endl;
 louvain_convert_2b(links, nb_links, filename);
 char binary_file[256] = "louvain_binary.txt";
-louvain_clustering(binary_file);
+vector<int> louvain_solution = louvain_clustering(binary_file, links, nb_links);
+cout << "#############################################################" << endl;
 
 	cout << "Program ended. Hit enter to exit.";
 	cin.get(); cin.get();

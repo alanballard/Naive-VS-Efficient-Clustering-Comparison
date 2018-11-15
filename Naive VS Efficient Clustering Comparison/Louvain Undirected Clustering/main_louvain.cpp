@@ -61,7 +61,7 @@ int type = UNWEIGHTED;
 
 int nb_pass = 0;
 long double precision = 0.000001L;
-int display_level = -2;
+int display_level = -2;//-1 to display clusterings at each level
 
 unsigned short id_qual = 0;
 
@@ -75,7 +75,7 @@ long double max_w = 1.0L;
 
 Quality *q;
 
-bool verbose = true;// false;
+bool verbose = false;// true to get a lot of additional info at each level;
 /*
 void
 usage(char *prog_name, const char *more) {
@@ -247,7 +247,7 @@ init_quality(Graph *g, unsigned short nbc) {
 
 
 //int main(/*int argc, char **argv*/) {
-int louvain_clustering(char *filename) {
+vector<int> louvain_clustering(char *filename, vector< vector<pair<int, int>> > links, int nb_links) {
 
   srand(time(NULL)+_getpid()); //ALAN getpid replaced with_getpid
 								//ALAN: https://msdn.microsoft.com/en-us/library/ms235372.aspx
@@ -265,11 +265,16 @@ int louvain_clustering(char *filename) {
   
   if (verbose) 
     display_time("Begin");
-  
+
   Graph g(filename, filename_w, type);
   init_quality(&g, nb_calls);
   nb_calls++;
-  
+
+  //ALAN: Initializing solution vector. Each node is assigned its own cluster. This will be updated as the nodes are merged.
+  vector<int> current_membership(g.nb_nodes, 0);
+  for (int i = 0; i < g.nb_nodes; i++) { current_membership[i] = i; }
+  //for (int i = 0; i < g.nb_nodes; i++) { cout<<current_membership[i]<<","; }cin.get(); cin.get();
+
   if (verbose)
     cerr << endl << "Computation of communities with the " << q->name << " quality function" << endl << endl;
   
@@ -302,6 +307,8 @@ int louvain_clustering(char *filename) {
     if (display_level==-1)
       c.display_partition();
     
+	current_membership=c.store_solution(current_membership);
+
     g = c.partition2graph_binary();
     init_quality(&g, nb_calls);
     nb_calls++;
@@ -313,7 +320,7 @@ int louvain_clustering(char *filename) {
     
     //quality = (c.qual)->quality();
     quality = new_qual;
-    
+	
     if (verbose)
       display_time("  end computation");
     
@@ -323,22 +330,26 @@ int louvain_clustering(char *filename) {
   
   //time(&time_end);
   clock_t end_new = clock();
-
+  
+  cout << setprecision(10);
+  long double time = 0;
   if (verbose) {
     display_time("End");
-	double time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
+	/*double*/ time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
     //cerr << "Total duration: " << (time_end-time_begin) << " sec" << endl;
 	cerr << "Total duration: " << time << " sec" << endl;
 
   }
-  cerr << new_qual << endl;
+  //cerr << new_qual << endl;
 
   //g.display();//ALAN
 
   delete q;
+ 
+  c.final_output(filename, links, current_membership, quality, nb_links, time);
 
-  cout << "PROGRAM IS DONE. HIT ENTER TO QUIT" << endl;
-  cin.get(); cin.get();
+  //cout << "PROGRAM IS DONE. HIT ENTER TO QUIT" << endl;
+  //cin.get(); cin.get();
 
-  return 0;
+  return current_membership;
 }

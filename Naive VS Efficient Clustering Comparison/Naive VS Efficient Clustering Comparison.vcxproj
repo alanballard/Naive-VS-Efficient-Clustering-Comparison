@@ -163,7 +163,7 @@
     <ClCompile Include="Louvain Undirected Clustering\graph_binary.cpp" />
     <ClCompile Include="Louvain Undirected Clustering\louvain.cpp" />
     <ClCompile Include="Louvain Undirected Clustering\main_louvain.cpp" />
-    <ClCompile Include="Louvain Undirected Clustering\modularity.cpp" />
+    <ClCompile Include="Louvain Undirected Clustering\louvain_modularity.cpp" />
     <ClCompile Include="Louvain Undirected Clustering\quality.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="modularity.cpp" />

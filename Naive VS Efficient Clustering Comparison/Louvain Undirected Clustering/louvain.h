@@ -84,6 +84,10 @@ class Louvain {
   // displays the current partition (with communities renumbered from 0 to k-1)
   void display_partition();
 
+  //ALAN
+  vector<int>  store_solution(vector<int> current_membership);
+  void final_output(char *filename, vector< vector<pair<int, int>> > links, vector<int> current_membership, long double quality, int nb_links, long double time);
+
   // generates the binary graph of communities as computed by one_level
   Graph partition2graph_binary();
 

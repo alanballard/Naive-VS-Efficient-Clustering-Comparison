@@ -146,6 +146,201 @@ Louvain::display_partition() {
     cout << i << " " << renumber[qual->n2c[i]] << endl;
 }
 
+//ALAN
+vector<int>
+Louvain::store_solution(vector<int> current_membership) {
+	
+	vector<int> updated_membership = current_membership;
+
+	vector<int> renumber(qual->size, -1);
+	for (int node = 0; node < qual->size; node++) {
+		renumber[qual->n2c[node]]++;
+	}
+
+	int end = 0;
+	for (int i = 0; i < qual->size; i++)
+		if (renumber[i] != -1)
+			renumber[i] = end++;
+
+	for (int i = 0; i < qual->size; i++) {
+		//cout << i << " " << renumber[qual->n2c[i]] << endl;
+		for (int j = 0; j < current_membership.size(); j++) {
+			if (current_membership[j] == i) {
+				updated_membership[j] = renumber[qual->n2c[i]];
+			}
+		}
+	}
+
+	return updated_membership;
+}
+//ALAN
+void
+Louvain::final_output(char *filename, vector< vector<pair<int, int>> > links, vector<int> current_membership, long double quality, int nb_links, long double time) {
+	//for (int i = 0; i < current_membership.size(); i++) { cout << i << ", " << current_membership[i] << endl; }
+	//cout << quality << endl;
+
+	int final_k = 0;
+	for (int i = 0; i < current_membership.size(); i++) { current_membership[i] = current_membership[i] + 1; }//Adjusting cluster numbers to start from 1, rather than zero, to match other objective fct. output
+	for (int i = 0; i < current_membership.size(); i++) { if (current_membership[i] > final_k) { final_k = current_membership[i]; } }
+	vector<int> group_size(final_k, 0);		//used in initial_pop to store number of nodes in each group 1:final_k
+	for (int i = 0; i < current_membership.size(); i++) { 
+		group_size[current_membership[i]-1]++; 
+	}
+
+//***********************************************
+	//In the case of modularity, we need to populate the OBS/POS matrices for the final membership here in order to calculate the likelihood for the modularity solution, so we can calculate BIC and a test statistic.
+	vector< vector <unsigned long long int >> OBS(final_k, vector<unsigned long long int>(final_k, 0));
+	vector< vector <unsigned long long int >> POS(final_k, vector<unsigned long long int>(final_k, 0));
+
+
+	for (int i = 0; i < links.size(); i++)
+	{
+		for (int j = 0; j < links[i].size(); j++)
+		{
+			//cout << "i=" << i << ", j=" << links[i][j].first << ", ct. of i's nbrs=" << links[i].size() << ", i's clust=" << current_membership[i] << ", j's cluster=" << current_membership[links[i][j].first] << ", weight=" << links[i][j].second;
+			if (current_membership[i] == current_membership[links[i][j].first])
+			{
+				OBS[current_membership[i] - 1]
+					[current_membership[i] - 1] =
+					OBS[current_membership[i] - 1]
+					[current_membership[i] - 1] + links[i][j].second;
+
+			}
+			else
+			{
+				OBS[current_membership[i] - 1]
+					[current_membership[links[i][j].first] - 1] =
+					OBS[current_membership[i] - 1]
+					[current_membership[links[i][j].first] - 1] + links[i][j].second;
+				//And to the corresponding lower triangle
+				//OBS[current_membership[j] - 1][current_membership[i] - 1] = OBS[current_membership[j] - 1][current_membership[i] - 1] + links[i][j].second;
+			}
+		}//j'th neighbor to i'th vertex
+	}//i'th vertex in adjacency list
+
+	 //ADDRESS DOUBLE-COUNTS
+	 //Note: Since the adjacency list contains 2 entries for every edge and the number of observed edges are counted
+	 //over the adjacency list, the total observed count needs to be divided by 2.
+	for (int i = 0; i < final_k; i++) { OBS[i][i] = OBS[i][i] / 2; }
+
+	//Populate possible edge count vector. This is done using the cluster size information
+	for (int i = 0; i < final_k; i++)
+	{
+		POS[i][i] = ((unsigned long long int) group_size[i] * (group_size[i] - 1)) / 2;
+	}
+	//Since we can use j=i+1 here, we don't have double counts.
+	for (int i = 0; i < final_k - 1; i++) {
+		for (int j = i + 1; j < final_k; j++)
+		{
+			//add number of edges possible between cluster i and cluster j
+			POS[i][j] = POS[i][j] + (unsigned long long int) group_size[i] * group_size[j];
+			POS[j][i] = POS[j][i] + (unsigned long long int) group_size[j] * group_size[i];
+		}
+	}
+
+
+	//At this point, a solution clustering has been identified.
+	long double full_loglik_curr = 0;	//loglikelihood for the solution clustering
+	long double LO = 0;					//loglikelihood under null hypothesis: # of clusters=1
+	long double BIC = 0;				//Bayesian Information Criterion
+	long double TESTSTAT = 0;
+
+	//Get loglikelihood of solution clustering and loglikelihood under null hypothesis: # of clusters=1
+	double l_0_w = 0; //loglikelihood of within-clusters
+	double l_0_b = 0; //loglikelihood of between-clusters
+	//l_0	=log(product of within and between-cluster likelihoods)
+	//		=sum(within and between-cluster loglikelihoods)
+	//		=(loglikelihood of within-clusters)+(loglikelihood of between-clusters);
+	//		=l_0_w+l_0_b
+
+	//Get loglikelihood of within-cluster edges
+	for (int i = 0; i < final_k; i++) {
+		if (OBS[i][i] != 0 && (OBS[i][i] != POS[i][i])) {
+			l_0_w = l_0_w +
+				(OBS[i][i])*log(OBS[i][i] / (long double)POS[i][i]) + (POS[i][i] - OBS[i][i])*log(1 - OBS[i][i] / (long double)POS[i][i]);
+		}
+	}
+
+	//Get loglikelihood of between-cluster edges
+	unsigned long long int TOT_OBS = 0;
+	unsigned long long int TOT_POS = 0;
+	for (int i = 0; i < final_k; i++) {
+		for (int j = i + 1; j < final_k; j++) {
+
+			if (OBS[i][j] != 0) {
+				//Modeling between-cluster vertices with a single parameter. Likelihood calculate below, outside of i/j loop
+				TOT_OBS = OBS[i][j];
+				TOT_POS = POS[i][j];
+				//To model between-cluster vertices individually with kchoose2 paramters.
+				//	l_0_b = l_0_b +
+				//		(OBS[i][j])*log(OBS[i][j] / (long double)POS[i][j]) + (POS[i][j] - OBS[i][j])*log(1 - OBS[i][j] / (long double)POS[i][j]);
+			}
+		}
+	}
+	//Loglikelihood of between cluster edges when modeled with a single paramter
+	l_0_b = (TOT_OBS)*log(TOT_OBS / (long double)TOT_POS) + ((long double)TOT_POS - TOT_OBS)*log(1 - (TOT_OBS / (long double)TOT_POS));
+
+	//loglikelihood of solution clustering
+	full_loglik_curr = l_0_w + l_0_b;
+
+	//loglikelihood under null assumption of only 1 cluster in network
+	long long int LO_OBS = 0;
+	long long int LO_POS = 0;
+	for (int i = 0; i < final_k; i++)
+	{
+		for (int j = i; j < final_k; j++)
+		{
+			LO_OBS = LO_OBS + OBS[i][j];
+			//cout << "OBS[i][j]="<<OBS[i][j] <<", LO_OBS="<< LO_OBS << endl;
+		}
+	}
+	LO_POS = current_membership.size() * (current_membership.size() - 1) / 2; //N choose 2
+
+	LO = (LO_OBS)*log(LO_OBS / (long double)LO_POS) + (LO_POS - LO_OBS)*log(1 - (LO_OBS / (long double)LO_POS));
+
+	//Indicates how many, if any, of the clusters have a observed edge weight/count=0.
+	int flag = 0;
+	for (int i = 0; i < final_k; i++) {
+		for (int j = i; j < final_k; j++) {
+			if (OBS[i][j] == 0) { flag++; }
+		}
+	}
+
+	//Calculate Bayesian Information Criterion for solution clustering
+	//In old code, BIC = -2 * (LO + 0.5*(-bestfit)) + (final_k + 1)*log(N*(N - 1) / 2);
+	//but bestfit = -(-2 * (LO - full_loglik_curr)), so this can be simplified:		
+	//number of parameters=(final_k+1), number of observations=Nchoose2=N(N-1)/2, maximized loglikelihood=full_loglik_curr
+//NOTE: In the case of modularity, full_loglik_curr is actually just the likelihood of the modularity solution, which may be different than the solution that maximizes likelihood
+//Therefore the BIC, loglikelihood and test statistic for the solution clustering under modularity are not particularly meaningful. Just calculating here to be thorough.
+	BIC = -2 * (full_loglik_curr)+(final_k + 1)*log(current_membership.size()*(current_membership.size() - 1) / (long double)2);
+	TESTSTAT = -2 * (LO - full_loglik_curr);
+//************************************************
+	cout << "final k= " <<final_k <<", modularity= " << quality << ", loglik=" << full_loglik_curr << ", BIC=" << BIC << ", TESTAT=" << TESTSTAT << ", time=" << time << " sec.s" << endl;
+
+	ostringstream atkstring2;
+	ofstream atkinfo2;
+	// If old file exists from a previous run, delete it.
+	//remove("completion_louv_final_sol.txt");
+	atkstring2 << "completion_louv_final_sol" << ".txt";
+	atkinfo2.open("completion_louv_final_sol.txt", ios::app);
+
+	//atkinfo2 << filename << "," << N << "," << nb_links << "," << final_k << "," << final_MODULARITY << "," << final_LOGLIK << "," << final_BIC << "," << final_TESTSTAT << "," << final_TIME;
+	atkinfo2 << filename << "," << current_membership.size() << "," << nb_links << "," << final_k << "," << quality << "," << full_loglik_curr << "," << BIC << "," << TESTSTAT << "," << time;
+	atkinfo2 << endl;
+	atkinfo2.close();
+
+	//PRINT OUT LOUVAIN SOLUTION TO FILE
+	ostringstream bestzsol;
+	ofstream bestzstorage;
+	// If old file exists from a previous run, delete it.
+	//remove("solution_louv.txt");
+	bestzsol << "solution_louv" << ".txt";
+	bestzstorage.open("solution_louv.txt", ios::app);
+	for (int i = 0; i < current_membership.size(); i++) { bestzstorage << current_membership[i] << "\t"; }
+	bestzstorage << endl;
+	bestzstorage.close();
+}
+
 Graph
 Louvain::partition2graph_binary() {
   // Renumber communities

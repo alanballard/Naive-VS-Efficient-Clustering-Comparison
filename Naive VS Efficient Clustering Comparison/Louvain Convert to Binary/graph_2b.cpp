@@ -71,31 +71,25 @@ Graph_b::Graph_b(vector<vector<pair<int, int/*long double*/> > > source_links, i
 
   }
   */
-  for (unsigned int i = 0; i < source_links.size(); i++) {
-	  cout << "Vertex " << i << ":";
-	  for (unsigned int j = 0; j < source_links[i].size(); j++) {
-		  cout << " " << source_links[i][j].first << " <" << source_links[i][j].second << ">";
-	  }
-	  cout << endl;
-  }
+  //for (unsigned int i = 0; i < source_links.size(); i++) {
+	 // cout << "Vertex " << i << ":";
+	 // for (unsigned int j = 0; j < source_links[i].size(); j++) {
+		//  cout << " " << source_links[i][j].first << " <" << source_links[i][j].second << ">";
+	 // }
+	 // cout << endl;
+  //}
 
   //Need to DE-dup the adjacency list
-  vector<vector<pair<int, int> > > test_links = source_links;
-  for (unsigned int i = 0; i < test_links.size(); i++) {
-	  for (unsigned int j = 0; j < test_links[i].size(); j++) {
-//if source node number > destination node number - remove destination node from source node's entry in the adjacency list
-if(i > test_links[i][j].first)
-{
-	test_links.erase(test_links[i][j]);
-}
-		  //test_links.erase(test_links[i][j]);
-	  }
-  }
-  
+//  vector<vector<pair<int, int> > > test_links = source_links;
+//  for (unsigned int i = 0; i < test_links.size(); i++) {
+//	  for (unsigned int j = 0; j < test_links[i].size(); j++) {
+////if source node number > destination node number - remove destination node from source node's entry in the adjacency list
+//		  //test_links.erase(test_links[i][j]);
+//	  }
+//  }  
 
   links = source_links;
   nb_links = link_count;
-  cout << links.size() << "..." << nb_links; cin.get(); cin.get();
 
   finput.close();
 }

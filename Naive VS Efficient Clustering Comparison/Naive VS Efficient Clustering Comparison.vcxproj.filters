@@ -60,9 +60,6 @@
     <ClCompile Include="Louvain Undirected Clustering\main_louvain.cpp">
       <Filter>Source Files\Louvain Undirected Clustering</Filter>
     </ClCompile>
-    <ClCompile Include="Louvain Undirected Clustering\modularity.cpp">
-      <Filter>Source Files\Louvain Undirected Clustering</Filter>
-    </ClCompile>
     <ClCompile Include="Louvain Undirected Clustering\quality.cpp">
       <Filter>Source Files\Louvain Undirected Clustering</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="Louvain Convert to Binary\louvain_convert_2b.cpp">
       <Filter>Source Files\Convert 2 Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="Louvain Undirected Clustering\louvain_modularity.cpp">
+      <Filter>Source Files\Louvain Undirected Clustering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
