@@ -2,14 +2,14 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>	
-#include <time.h>		//for calculating run-time
+#include <time.h>		
 #include <chrono>
-#include <string>		//for outputting file name
+#include <string>		
 #include <iomanip>
-#include <math.h>       //need for exponent fct.
-#include <algorithm>    //need for mininimum fct.
+#include <math.h>       
+#include <algorithm>    
 #include <vector>
-#include <cctype>		//for yes/no question
+#include <cctype>		
 
 #include <random>
 
@@ -17,11 +17,10 @@ using namespace std;
 
 using namespace chrono;
 
-int initial_pop(vector<int>& group_size, vector<int>& cluster_membership, int k, int N/*, mt19937& engine*/); //create initial membership vector
-vector<int> mutate_membership(vector<int> current_membership, vector<int> group_size/*, mt19937& engine*/); //mutate membership vector
+int initial_pop(vector<int>& group_size, vector<int>& cluster_membership, int k, int N); //create initial membership vector
+vector<int> mutate_membership(vector<int> current_membership, vector<int> group_size); //mutate membership vector
 
 int modularity(
-	//int seed,
 	char *filename,
 	vector< vector<pair<int, int>> > links,
 	int nb_links,
@@ -53,9 +52,7 @@ int modularity(
 	for (int k = min_k; k <= max_k; k = k + k_int)
 	{
 		cout << "MODULARITY METHOD, k=" << k << endl;
-//		mt19937 engine(seed);
-//		random_device rd;
-//		mt19937 e4(rd());
+
 		uniform_real_distribution<double> dist_uni(0.0, 1.0);
 
 		//measure time-to-solution
@@ -251,7 +248,7 @@ int modularity(
 			{
 				long double one = 1;      //used in MIN call to match data types.
 
-				double uni_draw = rand() / double(RAND_MAX);//dist_uni(e4);// dist_uni(engine)/*uniform_rand(rand())*/;
+				double uni_draw = rand() / double(RAND_MAX);
 				long double min_val = min(one, exp(delta_mod / IT)); 
 
 				if (uni_draw < min_val) //Accept proposed clustering
@@ -291,7 +288,7 @@ int modularity(
 		//cout << fixed;
 		cout << setprecision(10);		
 		clock_t end_new = clock();
-		double time = (double)(end_new - start_new) / CLOCKS_PER_SEC;/*(double)(end_new - start_new) * 1000.0 / CLOCKS_PER_SEC  for milliseconds*/
+		double time = (double)(end_new - start_new) / CLOCKS_PER_SEC;
 
 
 //In the case of modularity, we need to populate the OBS/POS matrices for the final membership here in order to calculate the likelihood for the modularity solution, so we can calculate BIC and a test statistic.
@@ -299,7 +296,6 @@ int modularity(
 		{
 			for (int j = 0; j < links[i].size(); j++)
 			{
-				//cout << "i=" << i << ", j=" << links[i][j].first << ", ct. of i's nbrs=" << links[i].size() << ", i's clust=" << cluster_membership[i] << ", j's cluster=" << cluster_membership[links[i][j].first] << ", weight=" << links[i][j].second;
 				if (cluster_membership[i] == cluster_membership[links[i][j].first])
 				{
 					OBS[cluster_membership[i] - 1]
@@ -393,7 +389,6 @@ int modularity(
 			for (int j = i; j < k; j++)
 			{
 				LO_OBS = LO_OBS + OBS[i][j];
-				//cout << "OBS[i][j]="<<OBS[i][j] <<", LO_OBS="<< LO_OBS << endl;
 			}
 		}
 		LO_POS = N*(N - 1) / 2; //N choose 2

@@ -2,9 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>	
-#include <time.h>		//for calculating run-time
+#include <time.h>		
 #include <vector>
-#include <cctype>		//for yes/no question
+#include <cctype>		
 
 
 using namespace std;
@@ -72,7 +72,7 @@ int lik_efficient(
 	double IT
 );
 
-int louvain_convert_2b(vector<vector<pair<int, int/*long double*/> > > source_links, int nb_links, char *filename);
+int louvain_convert_2b(vector<vector<pair<int, int> > > source_links, int nb_links, char *filename);
 vector<int> louvain_clustering(char *filename, vector< vector<pair<int, int>> > links, int nb_links);
 
 int main()
@@ -107,7 +107,6 @@ int main()
 	for (int i = 0; i < links.size(); i++)
 	{
 		if (links[i].size() == 0){ missing = 1; }
-		//links[i].size()
 	}
 	if (missing == 1){ 
 		cout << "WARNING WARNING WARNING" << endl;
@@ -147,23 +146,19 @@ int main()
 	//say, cluster from  k=10 to k=100 by increments of 10 (10,20,30...,90,100)
 			
 	//Simulated Annealing Algorithm Parameters
-	double InitTemp = 1;//.0025;//1
-	double CR = .9925;// 0.9925;//.99
-	int TL = 150;// 15000;	//300		//Maximum number of reclustering attempts at a given temperature
-	int Max_Success = TL;//100	//Maximum number of successes allowed at a given temperature
-							//Note: Setting both these values=1 is the equivalent of not using them at all in the SA algorithm.
+	double InitTemp = 1;
+	double CR = .9925;					// Rate at which temperature is reduced
+	int TL = 150;						//Maximum number of reclustering attempts at a given temperature
+	int Max_Success = TL;				//1Maximum number of successes allowed at a given temperature
+										//Note: Setting both these values=1 is the equivalent of not using them at all in the SA algorithm.
 	double LimitIT = 1.0e-8;
 	double epsilon = 1.0e-6;
 	int TL_counter = 0;
 	int Success_counter = 0;
 
 	double IT = InitTemp; //IT changes during Simulated Annealing process. InitTemp is used to initialize (or re-initialize) IT at the start of the process when multiple k values are analyzed
-	
-//	int seed = 0;	
+
 	srand(time(0));
-	//		random_device rd;
-	//		mt19937 e2(rd());
-	//		uniform_real_distribution<double> dist_uni(0.0, 1.0);
 
 	cout << "#############################################################" << endl;
 	modularity(
@@ -231,6 +226,10 @@ cout << "#############################################################" << endl;
 
 
 cout << "LOUVAIN METHOD" << endl;
+//LFR network is converted to, and read into Louvain Method clustering code as, binary format
+//When calculating time-to-solution for the Louvain Method, however, the clock only starts after
+//the network has been read in and clustering started. It doesn't include the binary converstion/reading process time.
+//The clock stops once the final solution has been reached.
 louvain_convert_2b(links, nb_links, filename);
 char binary_file[256] = "louvain_binary.txt";
 vector<int> louvain_solution = louvain_clustering(binary_file, links, nb_links);
@@ -242,70 +241,3 @@ cout << "#############################################################" << endl;
 }//END main()
 
 
-
-
-
-/*
-Example R code to create a graph in igraph,
-get the edge list (that is not symmetric)
-renumber the vertices (because they start at 1, but we need them to start at 0)
-make symmetric
-output to text file.
-
-
-g <- make_graph("Zachary")
-t1<-as.data.frame(as_edgelist(g))
-t1<-t1-1 #resize so that vertex numbers start at zero
-t2<-t1[,c(2,1)] #reverse column order
-colnames(t2) <- c("V1","V2") #rename columns
-t3<-rbind(t1, t2) #vertically stack columns
-el<-t3[with(t3, order(V1, V2)), ] #order for clarity
-write.table(el,"C:/Users/talktoalan/Documents/Visual Studio 2013/Projects/Efficient Undirected Network Clustering/Debug/karate_club.txt",sep="\t",col.names=FALSE,row.names=FALSE)
-
-
-//http://www.alglib.net/specialfunctions/distributions/chisquare.php
-//Download C++ .zip file, unpack and point to "src" folder here.
-//#include <C:\Users\talktoalan\Documents\Visual Studio 2013\Projects\Efficient Undirected Network Clustering\Efficient Undirected Network Clustering\src\specialfunctions.h>
-
-//Add all CPP files in SRC to project, and compile
-
-//cout << fixed;
-//setprecision(50);
-//double G = 4838341969836854217585.0 - 1.0; //S(n,k)-1=S(34,5)-1
-//double alpha = .95;
-//long double v = pow(1-.05,1/G);
-//cout << v << endl;
-//invchisquaredistribution(const double v, const double y)
-//cout << alglib::invchisquaredistribution(v, alpha) << endl;
-//cout << alglib::invchisquaredistribution(2*v, alpha) << endl;
-//cout << alglib::invchisquaredistribution(v, 1 - alpha) << endl;
-//cout << alglib::invchisquaredistribution(2*v, 1-alpha) << endl;
-//cin.get(); cin.get();
-//C(34,5) at alpha=.05=117.5 n=34, k=5
-
-
-//Test for acceptance
-////from old method
-////double dE = Ca - Cb;
-////if (Cb - Ca > 1.0e-6){accept}
-////where
-////Ca=-teststat(proposed)= -(-2 * (LO - loglikelihood)) for proposed solution
-////Cb=-teststat(current) = -(-2 * (LO - loglikelihood)) for current solution
-//
-////Then, in new method, accept if
-////dE
-////=Cb - Ca (where Cb=-prosed test stat and Ca=-current test stat
-////=[-(-2 * (LO - loglikelihood_prop))] - [-(-2 * (LO - loglikelihood_curr))]
-////=[2 * (LO - loglikelihood_prop)] - [2 * (LO - loglikelihood_curr)]
-////=2*LO - 2*loglikelihood_prop - 2*LO + 2*loglikelihood_curr
-////=2*(loglikelihood_curr - loglikelihood_prop)
-////=-2*(loglikelihood_prop - loglikelihood_curr)
-////=-2*[log(proposed/current)]
-////=-2*[delta l from current paper] > 1.0e-6
-//
-////and get same decision from
-////-[delta l from current paper] > 1.0e-6
-////=-(loglikelihood_prop - loglikelihood_curr) > 1.0e-6
-////=-(loglikelihood_curr - loglikelihood_prop) > 1.0e-6
-////or [log(current/proposed)]< 1.0e-6
-*/

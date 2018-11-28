@@ -2,13 +2,13 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>	
-#include <time.h>		//for calculating run-time
-#include <string>		//for outputting file name
+#include <time.h>		
+#include <string>		
 #include <iomanip>
-#include <math.h>       //need for exponent fct.
-#include <algorithm>    //need for mininimum fct.
+#include <math.h>       
+#include <algorithm>    
 #include <vector>
-#include <cctype>		//for yes/no question
+#include <cctype>		
 #include <random>
 
 using namespace std;
@@ -47,11 +47,7 @@ int lik_efficient(
 	for (int k = min_k; k <= max_k; k=k + k_int)
 	{
 		cout << "EFFICIENT LIKELIHOOD METHOD, k=" << k << endl;
-	
-		//random_device rd;
-		//mt19937 e3(rd());
-		//uniform_real_distribution<double> dist_uni(0.0, 1.0);
-		
+			
 		clock_t start_new = clock(); //Time until solution
 		
 //Step: Initialize k+1 current/proposed OBS and POS vectors, and current/proposed membership vector
@@ -148,7 +144,7 @@ int lik_efficient(
 			{
 //Step: Make initial membership
 				//Populate cluster assignment and size vectors
-				initial_pop(group_size, cluster_membership, k, N/*, engine*/);//assigns initial cluster assignments to z, and counts cluster sizes
+				initial_pop(group_size, cluster_membership, k, N);//assigns initial cluster assignments to z, and counts cluster sizes
 				first_run = 0;
 
 //Step: Populate OBS and POS vectors based on this membership
@@ -334,7 +330,7 @@ int lik_efficient(
 			{
 				long double one = 1;      //used in MIN call to match data types.
 
-				double uni_draw = rand() / double(RAND_MAX);// dist_uni(e3);// dist_uni(engine)/*uniform_rand(rand())*/;
+				double uni_draw = rand() / double(RAND_MAX);
 				double min_val = min(one, exp(delta_l / IT));
 				
 				if (uni_draw < min_val) //Accept proposed clustering
@@ -402,10 +398,6 @@ int lik_efficient(
 					);
 			}
 		}
-
-//Checking the observed and possible edge counts in the final solution
-//for (int i = 0; i <= k; i++) { cout << OBS[i] << "..."; } cout << endl;
-//for (int i = 0; i <= k; i++) { cout << POS[i] << "..."; } cout << endl;
 
 		//Get loglikelihood of between-cluster edges
 		unsigned long long int TOT_OBS = 0;
