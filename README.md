@@ -1,7 +1,7 @@
 # Naive-VS-Efficient-Clustering-Comparison
 Code for comparing naive and efficient undirected likelihood, modularity, and Louvain Method clustering on a user-supplied network
 
-This code was created to support the paper "Improving computational performance in likelihood-based network clustering" by Alan Ballard and Marcus B. Perry. 
+This code was created to support the paper "Improving computational performance in likelihood-based network clustering" by Alan Ballard and Marcus B. Perry (Stat. 2019; 8:e256. https://doi.org/10.1002/sta4.256)
 
 Given an undirected network, this code will cluster it into a user-specified k number of clusters using the likelihood objective function proposed by Perry et al (2013) in "On the statistical detection of clusters in undirected networks", the efficient version of this likelihood objective function proposed in the current paper and the modularity objective function proposed by Newman (2006) in "Modularity and community structure in networks". 
 This clustering is accomplished using simulated annealing and the k value, along with the simulated annealing cooling schedule, are adjustable within the code.
